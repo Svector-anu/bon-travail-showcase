@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Bon Travail: an agent posts small tasks, a human answers, the Arc chain decides. Built with Aeon and Arc Studio.">
+<meta property="og:title" content="Bon Travail">
+<meta property="og:description" content="An agent posts small tasks, a human answers, the chain decides. Built with Aeon and Arc Studio on Arc testnet.">
+<meta property="og:image" content="https://svector-anu.github.io/bon-travail-showcase/shots/home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<title>Bon Travail Build Log</title>
+<style>
+body { margin: 0; }
+img { max-width: 100%; }
+/* Layout: one reading column with full-width screenshot plates; dark-first to match the app itself. */
+:root {
+  --bg: #070a12;
+  --panel: #0e1220;
+  --line: #1f2638;
+  --fg: #eef1f8;
+  --muted: #8f98ad;
+  --blue: #5b74ff;
+  --green: #5fd08f;
+  --amber: #e6c25b;
+  --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 56px 96px; display: grid; gap: 88px; }
+a { color: var(--fg); text-decoration-color: var(--blue); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+.mono { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
+.muted { color: var(--muted); }
+.kicker { color: var(--muted); font-size: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 20%, transparent); }
+
+header { display: grid; gap: 22px; }
+h1 { font-family: var(--display); font-weight: 500; font-size: clamp(44px, 8vw, 88px); line-height: 0.98; margin: 0; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--green); }
+.lede { font-size: clamp(18px, 2.2vw, 21px); max-width: 40em; margin: 0; color: #cfd5e4; }
+.plate { margin: 8px 0 0; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--panel); }
+.plate img { display: block; width: 100%; height: auto; }
+figcaption { padding: 12px 16px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+
+section { display: grid; gap: 26px; }
+h2 { font-family: var(--display); font-weight: 500; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h3 { font-size: 18px; font-weight: 600; margin: 0; }
+p { margin: 0; max-width: 62ch; }
+
+.loop { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.loop li { background: var(--panel); padding: 20px; display: grid; gap: 6px; align-content: start; }
+.loop .n { font-family: var(--mono); font-size: 13px; color: var(--blue); }
+.loop p { font-size: 14.5px; color: #c4cadb; }
+
+.skills { display: grid; gap: 16px; }
+.skill { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); padding: 24px; display: grid; gap: 14px; }
+.skill-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.skill-head code { font-family: var(--mono); font-size: 15px; color: var(--fg); }
+.chip { font-size: 12.5px; padding: 3px 10px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.chip.live { color: var(--green); }
+.chip.wait { color: var(--amber); }
+.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 18px; margin: 0; font-size: 14.5px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; min-width: 0; }
+.skill ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14.5px; color: #c4cadb; max-width: 62ch; }
+
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pair .plate { margin: 0; }
+
+.ledger { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ledger div { border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 4px; }
+.ledger strong { font-size: 30px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.ledger span { font-size: 14px; color: var(--muted); }
+.eng { margin: 0; padding-left: 18px; display: grid; gap: 8px; max-width: 64ch; color: #c4cadb; }
+
+.status { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.status > div { border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; gap: 12px; align-content: start; }
+.status ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14.5px; color: #c4cadb; }
+
+.post { border: 1px solid color-mix(in srgb, var(--blue) 45%, var(--line)); border-radius: 16px; background: color-mix(in srgb, var(--blue) 7%, var(--panel)); padding: 22px; display: grid; gap: 16px; }
+.post pre { margin: 0; white-space: pre-wrap; font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.post-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+button { font: inherit; font-size: 14px; color: var(--bg); background: var(--fg); border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer; }
+
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 20px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
+
+@media (max-width: 760px) {
+  .wrap { gap: 64px; padding-block: 36px 72px; }
+  .loop { grid-template-columns: minmax(0, 1fr); }
+  .pair, .status { grid-template-columns: minmax(0, 1fr); }
+  .ledger { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .facts { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .facts dd { margin-bottom: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="kicker"><span class="dot" aria-hidden="true"></span> Built on Arc testnet with Aeon and Arc Studio</div>
+    <h1>Bon Travail.<br><em>Work that pays itself.</em></h1>
+    <p class="lede">An autonomous agent posts small tasks. A person answers. The server checks the answer against the Arc chain itself, then pays the USDC reward or refunds it. Every outcome gets a public receipt.</p>
+    <figure class="plate">
+      <img src="shots/home.jpg" alt="Bon Travail home page: a retro computer in a meadow at sunset, headline 'Real work for autonomous agents', with live counts of completed tasks, payments and refunds.">
+      <figcaption>Home. Counts are live from the task ledger.</figcaption>
+    </figure>
+  </header>
+
+  <section aria-labelledby="loop">
+    <h2 id="loop">The loop</h2>
+    <p class="muted">There are no judgment calls anywhere: a correct answer is one that matches the chain exactly.</p>
+    <ol class="loop">
+      <li><span class="n">1</span><h3>Agent posts</h3><p>Picks a real Arc transfer, reserves the 1 USDC reward, opens the task.</p></li>
+      <li><span class="n">2</span><h3>Human claims</h3><p>A ten-minute lock, bound to the claimer's wallet.</p></li>
+      <li><span class="n">3</span><h3>Answer</h3><p>Who received the USDC, and exactly how much.</p></li>
+      <li><span class="n">4</span><h3>Chain checks</h3><p>The server re-reads Arc over RPC: checksummed address, 6-decimal amount, exact match.</p></li>
+      <li><span class="n">5</span><h3>Pay or refund</h3><p>Match pays the worker. No match by the deadline refunds the agent.</p></li>
+      <li><span class="n">6</span><h3>Receipt</h3><p>Immutable, public, sealed with a sha256 digest.</p></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="aeon">
+    <h2 id="aeon">Two Aeon skills do the agent work</h2>
+    <p class="muted">Aeon runs skills on GitHub Actions on a schedule. Bon Travail uses two of them.</p>
+    <div class="skills">
+      <article class="skill">
+        <div class="skill-head"><code>arc-studio</code><span class="chip live">Ran on Aeon today</span></div>
+        <p>Drives Circle's Arc Studio from a headless runner. Arc Studio wrote, tested and deployed the escrow contract that holds every reward.</p>
+        <dl class="facts">
+          <dt>Contract</dt><dd><a class="mono" href="https://testnet.arcscan.app/address/0xe8165f9eba6f2e26b552146506abd5df05ae4dd8" target="_blank" rel="noreferrer">ProofworkEscrow 0xe816…4dd8</a></dd>
+          <dt>Deploy tx</dt><dd><a class="mono" href="https://testnet.arcscan.app/tx/0xa2adc7085d7ee53ba5d802139ff788bca295145913dd9d863da7e81cf2004529" target="_blank" rel="noreferrer">0xa2ad…4529</a></dd>
+          <dt>Tests</dt><dd>33 Foundry tests, written by Arc Studio</dd>
+          <dt>Rules</dt><dd>Only the agent can fund, release or refund. A task can never be both paid and refunded. 1 USDC cap per task.</dd>
+        </dl>
+        <ul>
+          <li>The deploy was driven by this skill's own turn script, run from the project.</li>
+          <li>Then Aeon itself ran the skill on GitHub Actions with the Claude harness: one run started an Arc Studio turn, a second run picked it up and settled it.</li>
+          <li>Along the way it hit a real sandbox bug: the skill could not save its state in read-only mode. The fix is one line, verified on Aeon, in <a href="https://github.com/Svector-anu/svectors-lab/pull/117" target="_blank" rel="noreferrer">PR #117</a>.</li>
+        </ul>
+      </article>
+      <article class="skill">
+        <div class="skill-head"><code>proofwork-loop</code><span class="chip wait">Ready, waits for a public URL</span></div>
+        <p>The agent's heartbeat. Every ten minutes it triggers one sweep: publish new work, release lapsed claims, verify, pay, expire and refund.</p>
+        <ul>
+          <li>It can call exactly one endpoint. It never decides who gets paid; the server does, by exact comparison.</li>
+          <li>Its token never appears on a command line, and it treats every string in a response as data, not instructions.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="screens">
+    <h2 id="screens">What a worker sees</h2>
+    <div class="pair">
+      <figure class="plate">
+        <img src="shots/task.jpg" alt="Task page: 'Read this Arc transaction' with the transaction hash, 1.00 USDC reward, 4h 19m left, Arc Testnet, and a Claim this task button.">
+        <figcaption>A live task: reward, countdown, chain, claim.</figcaption>
+      </figure>
+      <figure class="plate">
+        <img src="shots/receipt.jpg" alt="Receipt page reading 'Bon travail.' with 1.00 USDC sent, the expected onchain recipient and amount matching the submission, and a Simulated payout label.">
+        <figcaption>The receipt. Expected vs submitted, field by field. This one is labelled simulated.</figcaption>
+      </figure>
+      <figure class="plate">
+        <img src="shots/agent.jpg" alt="Agent page: a timeline of the agent's actions, such as published, reserved reward, refunded, answer rejected, paid.">
+        <figcaption>Every agent action, in public.</figcaption>
+      </figure>
+      <figure class="plate">
+        <img src="shots/home-mobile.jpg" alt="Bon Travail home page on a phone, with its own crop of the meadow scene.">
+        <figcaption>Phones get their own composition.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="eng">
+    <h2 id="eng">Built like it moves money</h2>
+    <div class="ledger">
+      <div><strong>81</strong><span>app tests passing</span></div>
+      <div><strong>33</strong><span>contract tests</span></div>
+      <div><strong>11</strong><span>task states, one legal path</span></div>
+      <div><strong>3</strong><span>spending caps</span></div>
+    </div>
+    <ul class="eng">
+      <li>One state machine. Every move goes through one function; anything illegal throws.</li>
+      <li>Events are append-only and receipts can't be edited, enforced by the database itself.</li>
+      <li>Payments are idempotent: a retry can never pay twice.</li>
+      <li>Caps: 1 USDC per task, 10 per day, 5 outstanding in escrow.</li>
+      <li>The right answer stays hidden until the task settles.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="status">
+    <h2 id="status">Where it stands</h2>
+    <div class="status">
+      <div>
+        <h3>Real today</h3>
+        <ul>
+          <li>Tasks built from real Arc testnet transfers</li>
+          <li>Answers verified against live Arc RPC</li>
+          <li>Escrow contract deployed and verified on Arc testnet</li>
+          <li>Both Aeon skills, with the Arc Studio skill proven on Aeon</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Next</h3>
+        <ul>
+          <li>Fund the agent wallet and switch on real testnet payouts. Until then payouts are labelled simulated.</li>
+          <li>Turn on sign-in with X, Google or email.</li>
+          <li>Host it, then let Aeon run the loop every ten minutes.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="share">
+    <h2 id="share">Post it</h2>
+    <div class="post">
+      <pre id="post-text">Built Bon Travail: an agent posts small tasks, a human answers, the chain decides.
+
+Every answer is checked against Arc itself. Match pays USDC, no match refunds. Public receipt either way.
+
+Escrow written, tested and deployed by Arc Studio via an Aeon skill. Arc testnet.</pre>
+      <div class="post-foot">
+        <span id="post-count"></span>
+        <button type="button" id="copy-post">Copy post</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Bon Travail, October 2026</span>
+    <span><a href="https://github.com/aeonfun/aeon" target="_blank" rel="noreferrer">Aeon</a> · <a href="https://testnet.arcscan.app" target="_blank" rel="noreferrer">Arcscan testnet</a></span>
+  </footer>
+</div>
+
+<script>
+const text = document.getElementById('post-text')
+const count = document.getElementById('post-count')
+const button = document.getElementById('copy-post')
+count.textContent = `${text.textContent.length} characters`
+button.addEventListener('click', () => {
+  navigator.clipboard.writeText(text.textContent).then(
+    () => { button.textContent = 'Copied' },
+    () => {
+      const range = document.createRange()
+      range.selectNodeContents(text)
+      const selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(range)
+      button.textContent = 'Selected, press copy'
+    },
+  )
+})
+</script>
+</body>
+</html>
